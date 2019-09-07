@@ -37,7 +37,7 @@ public class MyPhoneStateListener extends PhoneStateListener {
     private void triggerOverlay(Context context, String number) {
         Intent svc = new Intent(context, MainService.class);
         svc.putExtra("number", number);
-        //context.stopService(svc);
+        context.stopService(svc);
         context.startService(svc);
     }
 

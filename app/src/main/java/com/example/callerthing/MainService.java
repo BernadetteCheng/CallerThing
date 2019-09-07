@@ -15,12 +15,20 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 /**
  * Created by matt on 08/08/2016.
  */
 
 public class MainService extends Service implements View.OnTouchListener {
     public String number;
+    public String jsonText;
     private static final String TAG = MainService.class.getSimpleName();
 
     private WindowManager windowManager;
@@ -36,7 +44,22 @@ public class MainService extends Service implements View.OnTouchListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.number = intent.getStringExtra("number");
-        addOverlayView();
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String url = "insert api key here="+number;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        jsonText = response;
+                        addOverlayView();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error){
+                jsonText = "error";
+            }
+        });
+        queue.add(stringRequest);
         return Service.START_STICKY;
     }
     @Override
@@ -64,7 +87,7 @@ public class MainService extends Service implements View.OnTouchListener {
         params.y = 0;
 
         FrameLayout interceptorLayout = new FrameLayout(this) {
-
+/*
             @Override
             public boolean dispatchKeyEvent(KeyEvent event) {
 
@@ -84,6 +107,8 @@ public class MainService extends Service implements View.OnTouchListener {
                 // Otherwise don't intercept the event
                 return super.dispatchKeyEvent(event);
             }
+
+ */
         };
 
         floatyView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_view, interceptorLayout);
@@ -91,28 +116,27 @@ public class MainService extends Service implements View.OnTouchListener {
         floatyView.setOnTouchListener(this);
 
         TextView textView = interceptorLayout.findViewById(R.id.floatyText);
-        Log.d("TTTTTTTTTTTTT", "number: " + number);
-        Log.d("sadoasdoiandoiansda", "post number log");
-        if (number != "") {
-            textView.setText(number);
+        if(jsonText != "") {
+            textView.setText(jsonText);
         } else {
             textView.setText("error!");
         }
-        Log.d("TTTTTTTTTTTTTTTT", (String)textView.getText());
         windowManager.addView(floatyView, params);
     }
 
     @Override
     public void onDestroy() {
+//        Log.d("FFFFF", floatyView.toString());
 
-        super.onDestroy();
-
+        Log.d("D3", "should destroy!");
+        System.gc();
         if (floatyView != null) {
-
+            Log.d("DESTROYER", "should be removing right now");
             windowManager.removeView(floatyView);
 
             floatyView = null;
         }
+        super.onDestroy();
     }
 
     @Override

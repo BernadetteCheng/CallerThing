@@ -21,6 +21,9 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class HomeActivity extends AppCompatActivity {
 
     public ServiceReceiver serviceReceiver;
@@ -33,13 +36,15 @@ public class HomeActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        int callLogPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG);
-        if (callLogPermission != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALL_LOG}, 100);
+        String[] permissions = {Manifest.permission.READ_CALL_LOG, Manifest.permission.READ_PHONE_STATE};
+        List<String> permsNeeded = new ArrayList<String>();
+        for (String s : permissions) {
+            if (ContextCompat.checkSelfPermission(this, s) != PackageManager.PERMISSION_GRANTED) {
+                permsNeeded.add(s);
+            }
         }
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 99);
+        if (permsNeeded.size() > 0) {
+            ActivityCompat.requestPermissions(this, permsNeeded.toArray(new String[permsNeeded.size()]), 99);
         }
 
         if (Settings.canDrawOverlays(this)) {
@@ -69,6 +74,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void launchMainService() {
         Intent svc = new Intent(this, MainService.class);
+        svc.putExtra("number", "5198884567");
         stopService(svc);
         startService(svc);
     }
