@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">whodis</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_home">Log</string>
     <string name="whiteload">whiteload</string>
 </resources>
