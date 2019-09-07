@@ -6,7 +6,7 @@
 
     <TextView
         android:id="@+id/floatyText"
-        android:textSize="120sp"
+        android:textSize="25sp"
         android:textAlignment="center"
         android:textColor="@android:color/white"
         android:layout_height="wrap_content"

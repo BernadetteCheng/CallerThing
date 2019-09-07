@@ -3,6 +3,8 @@
     package="com.example.callerthing">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
 
     <application
         android:allowBackup="true"
@@ -27,6 +29,11 @@
         <service
             android:name=".MainService"
             android:exported="false" />
+        <receiver android:name=".ServiceReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

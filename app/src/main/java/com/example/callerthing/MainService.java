@@ -13,12 +13,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
+
 /**
  * Created by matt on 08/08/2016.
  */
 
 public class MainService extends Service implements View.OnTouchListener {
-
+    public String number;
     private static final String TAG = MainService.class.getSimpleName();
 
     private WindowManager windowManager;
@@ -32,13 +34,19 @@ public class MainService extends Service implements View.OnTouchListener {
     }
 
     @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        this.number = intent.getStringExtra("number");
+        addOverlayView();
+        return Service.START_STICKY;
+    }
+    @Override
     public void onCreate() {
 
         super.onCreate();
 
-        windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        Log.d("TAG", "created overlay!");
 
-        addOverlayView();
+        windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
     }
 
     private void addOverlayView() {
@@ -82,6 +90,15 @@ public class MainService extends Service implements View.OnTouchListener {
 
         floatyView.setOnTouchListener(this);
 
+        TextView textView = interceptorLayout.findViewById(R.id.floatyText);
+        Log.d("TTTTTTTTTTTTT", "number: " + number);
+        Log.d("sadoasdoiandoiansda", "post number log");
+        if (number != "") {
+            textView.setText(number);
+        } else {
+            textView.setText("error!");
+        }
+        Log.d("TTTTTTTTTTTTTTTT", (String)textView.getText());
         windowManager.addView(floatyView, params);
     }
 
