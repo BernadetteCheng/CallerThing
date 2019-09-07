@@ -8,4 +8,11 @@
     tools:context=".HomeActivity"
     tools:showIn="@layout/activity_home">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/backlog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey"
+        android:padding="4dp"
+        android:scrollbars="vertical" />
 </androidx.constraintlayout.widget.ConstraintLayout>

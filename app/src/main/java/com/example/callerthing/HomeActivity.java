@@ -10,6 +10,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
 
+import java.util.ArrayList;
+
 public class HomeActivity extends AppCompatActivity {
 
     @Override
@@ -18,6 +20,9 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ArrayList<item> list=new ArrayList<>();
+        list.add(new item(R.drawable.ic_whodis_white_logo_02, "", ""));
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
