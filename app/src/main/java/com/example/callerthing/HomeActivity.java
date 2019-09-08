@@ -77,17 +77,10 @@ public class HomeActivity extends AppCompatActivity {
                 insertItem(position);
             }
         });
+
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(100);
         mRecyclerView.setItemAnimator(itemAnimator);
-      
-        FloatingActionButton showOverlay = findViewById(R.id.showOverlay);
-        showOverlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchMainService();
-            }
-        });
     }
 
     private void launchMainService() {
@@ -116,21 +109,23 @@ public class HomeActivity extends AppCompatActivity {
         mList.add(new Item(R.mipmap.uw, "University of Waterloo", "(519) 888-4567"));
         mList.add(new Item(R.mipmap.four, "Toronto", "(437) 862-8864"));
     }
-  
+    public void buildRecyclerView() {
+        mRecyclerView = findViewById(R.id.backlog);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new Adapter(mList);
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
     public final static int REQUEST_CODE = 10101;
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void checkDrawOverlayPermission() {
-
-        // Checks if app already has permission to draw overlays
         if (!Settings.canDrawOverlays(this)) {
 
-            // If not, form up an Intent to launch the permission request
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
 
-            // Launch Intent, with the su
-          
-          
-         pplied request code
             startActivityForResult(intent, REQUEST_CODE);
         }
     }
@@ -150,15 +145,6 @@ public class HomeActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "Sorry. Can't draw overlays without permission...", Toast.LENGTH_SHORT).show();
             }
-        } 
-    }
-    public void buildRecyclerView() {
-        mRecyclerView = findViewById(R.id.backlog);
-        mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mAdapter = new Adapter(mList);
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        }
     }
 }

@@ -29,7 +29,6 @@ public class MyPhoneStateListener extends PhoneStateListener {
             case TelephonyManager.CALL_STATE_RINGING:
                 Log.d("DEBUG", "RINGING");
                 phoneRinging = true;
-                Log.d("MMMMMMMMMMMM", "number from mpsl: " + incomingNumber);
                 triggerOverlay(context, incomingNumber);
                 break;
         }
