@@ -57,7 +57,11 @@ public class MainService extends Service implements View.OnTouchListener {
 
         FrameLayout interceptorLayout = new FrameLayout(this);
 
-        floatyView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_view, interceptorLayout);
+        if (finalString.contains("Unknown")) {
+            floatyView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_view_bad, interceptorLayout);
+        } else {
+            floatyView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_view_good, interceptorLayout);
+        }
 
         floatyView.setOnTouchListener(this);
 

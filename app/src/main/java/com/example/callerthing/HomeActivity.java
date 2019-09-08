@@ -68,15 +68,6 @@ public class HomeActivity extends AppCompatActivity {
         createList();
         buildRecyclerView();
 
-        button = findViewById(R.id.button);
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                insertItem("generic name", "generic number");
-            }
-        });
-
         RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
         itemAnimator.setAddDuration(100);
         mRecyclerView.setItemAnimator(itemAnimator);
