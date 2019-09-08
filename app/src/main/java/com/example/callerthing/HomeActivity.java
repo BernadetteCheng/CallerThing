@@ -30,11 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
-    private ArrayList<Item> mList;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    public static ArrayList<Item> mList;
+    private static RecyclerView mRecyclerView;
+    private static RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private FloatingActionButton button;
+    public String callingNumber;
 
     public ServiceReceiver serviceReceiver;
 
@@ -42,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        serviceReceiver = new ServiceReceiver();
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -63,8 +65,6 @@ public class HomeActivity extends AppCompatActivity {
             checkDrawOverlayPermission();
         }
 
-        serviceReceiver = new ServiceReceiver();
-
         createList();
         buildRecyclerView();
 
@@ -73,8 +73,7 @@ public class HomeActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = 0;
-                insertItem(position);
+                insertItem("generic name", "generic number");
             }
         });
 
@@ -83,16 +82,12 @@ public class HomeActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(itemAnimator);
     }
 
-    private void launchMainService() {
-        Intent svc = new Intent(this, MainService.class);
-        svc.putExtra("number", "2551954495");
-        stopService(svc);
-        startService(svc);        
-    }
-
-    public void insertItem(int position) {
-        mList.add(position, new Item(R.mipmap.five, "New Description", "New Number"));
-        mAdapter.notifyItemInserted(position);
+    public static void insertItem(String name, String number) {
+        if (mList.get(0).getNumber().equals(number)) {
+            return;
+        }
+        mList.add(0, new Item(R.mipmap.five, name, number));
+        mAdapter.notifyItemInserted(0);
         LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
         llm.scrollToPosition(0);
     }
