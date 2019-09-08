@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,21 +19,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import org.json.JSONObject;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by matt on 08/08/2016.
- */
 
 public class MainService extends Service implements View.OnTouchListener {
     public String number;
@@ -103,19 +88,30 @@ public class MainService extends Service implements View.OnTouchListener {
 
         floatyView.setOnTouchListener(this);
 
+        String name = "Unknown";
+        String city = "Unknown";
+        String state_code = "";
+        String type = "Unknown";
+
         JsonParser parser = new JsonParser();
         JsonObject jso = parser.parse(jsonText).getAsJsonObject();
-        JsonObject entity = jso.getAsJsonArray("belongs_to").get(0).getAsJsonObject();
-        String name = entity.get("name").getAsString();
-        String type = entity.get("type").getAsString();
-        String city = jso.getAsJsonArray("current_addresses").get(0).getAsJsonObject().get("city").getAsString();
+        try {
+            JsonObject entity = jso.getAsJsonArray("belongs_to").get(0).getAsJsonObject();
+            name = entity.get("name").getAsString();
+            type = entity.get("type").getAsString();
+        } catch (Exception e) {
+        }
+        try {
+            JsonObject address = jso.getAsJsonArray("current_addresses").get(0).getAsJsonObject();
+            city = address.get("city").getAsString();
+            state_code = address.get("state_code").getAsString();
+        } catch (Exception e) {
+        }
 
         finalString = "Name: " + name + "\n";
-        finalString += "City: " + city + "\n";
-        finalString += "Type: " + type;
-
-        //Log.d("JJJJJJ", jsonObject.toString());
-        //Log.d("FFFFFF", finalString);
+        finalString += "City: " + city;
+        if (state_code != "") finalString += ", " + state_code;
+        finalString += "\nType: " + type;
 
         TextView textView = interceptorLayout.findViewById(R.id.floatyText);
         if(finalString != "") {
@@ -128,10 +124,8 @@ public class MainService extends Service implements View.OnTouchListener {
 
     @Override
     public void onDestroy() {
-        System.gc();
         if (floatyView != null) {
             windowManager.removeView(floatyView);
-
             floatyView = null;
         }
         super.onDestroy();
@@ -139,10 +133,7 @@ public class MainService extends Service implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
-
-        // Kill service
         onDestroy();
-
         return true;
     }
 }
