@@ -46,7 +46,7 @@ public class MyPhoneStateListener extends PhoneStateListener {
     public void getCallerData (final Context context, final String number) {
 
         RequestQueue queue = Volley.newRequestQueue(context.getApplicationContext());
-        String url = "https://api.ekata.com/3.0/phone.json?api_key=337a4654a9854d20b556ef2926eaa919&phone.country_hint=1&phone="+number;
+        String url = "insert ekata api key here!"+number;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
