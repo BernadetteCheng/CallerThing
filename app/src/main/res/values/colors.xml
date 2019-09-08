@@ -5,4 +5,5 @@
     <color name="colorAccent">#ffffff</color>
     <color name="colorPrimary">#f38b00</color>
     <color name="colorNotificationBar">#000000</color>
+    <color name="grey">#414141</color>
 </resources>

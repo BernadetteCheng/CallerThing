@@ -6,12 +6,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.view.View;
+import android.widget.ListView;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -20,11 +20,21 @@ import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
+    private ArrayList<Item> mList;
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private FloatingActionButton button;
 
     public ServiceReceiver serviceReceiver;
 
@@ -55,14 +65,22 @@ public class HomeActivity extends AppCompatActivity {
 
         serviceReceiver = new ServiceReceiver();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        createList();
+        buildRecyclerView();
+
+        button = findViewById(R.id.button);
+
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                int position = 0;
+                insertItem(position);
             }
         });
+        RecyclerView.ItemAnimator itemAnimator = new DefaultItemAnimator();
+        itemAnimator.setAddDuration(100);
+        mRecyclerView.setItemAnimator(itemAnimator);
+      
         FloatingActionButton showOverlay = findViewById(R.id.showOverlay);
         showOverlay.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,8 +94,29 @@ public class HomeActivity extends AppCompatActivity {
         Intent svc = new Intent(this, MainService.class);
         svc.putExtra("number", "2551954495");
         stopService(svc);
-        startService(svc);
+        startService(svc);        
     }
+
+    public void insertItem(int position) {
+        mList.add(position, new Item(R.mipmap.five, "New Description", "New Number"));
+        mAdapter.notifyItemInserted(position);
+        LinearLayoutManager llm = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+        llm.scrollToPosition(0);
+    }
+
+    public void createList() {
+        mList = new ArrayList<>();
+        mList.add(new Item(R.mipmap.pizza, "Pizza Pizza", "(416) 967-1111"));
+        mList.add(new Item(R.mipmap.sushi, "Jennifer Chen", "(416) 321-9797"));
+        mList.add(new Item(R.mipmap.dog, "Aayan Berger", "(647) 982-2001"));
+        mList.add(new Item(R.mipmap.dental, "Dev Dental", "(416) 292-4333"));
+        mList.add(new Item(R.mipmap.one, "Turkey", "(444) 53-98"));
+        mList.add(new Item(R.mipmap.two, "Unknown", "(905) 754-1020"));
+        mList.add(new Item(R.mipmap.three, "California", "(202) 555-0171"));
+        mList.add(new Item(R.mipmap.uw, "University of Waterloo", "(519) 888-4567"));
+        mList.add(new Item(R.mipmap.four, "Toronto", "(437) 862-8864"));
+    }
+  
     public final static int REQUEST_CODE = 10101;
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void checkDrawOverlayPermission() {
@@ -88,7 +127,10 @@ public class HomeActivity extends AppCompatActivity {
             // If not, form up an Intent to launch the permission request
             Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
 
-            // Launch Intent, with the supplied request code
+            // Launch Intent, with the su
+          
+          
+         pplied request code
             startActivityForResult(intent, REQUEST_CODE);
         }
     }
@@ -108,6 +150,15 @@ public class HomeActivity extends AppCompatActivity {
 
                 Toast.makeText(this, "Sorry. Can't draw overlays without permission...", Toast.LENGTH_SHORT).show();
             }
-        }
+        } 
+    }
+    public void buildRecyclerView() {
+        mRecyclerView = findViewById(R.id.backlog);
+        mRecyclerView.setHasFixedSize(true);
+        mLayoutManager = new LinearLayoutManager(this);
+        mAdapter = new Adapter(mList);
+
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mAdapter);
     }
 }

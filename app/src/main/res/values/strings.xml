@@ -1,4 +1,6 @@
 <resources>
-    <string name="app_name">CallerThing</string>
-    <string name="title_activity_home">HomeActivity</string>
+    <string name="app_name">whodis</string>
+    <string name="title_activity_home">Log</string>
+    <string name="whiteload">whiteload</string>
+    <string name="search">Search</string>
 </resources>
