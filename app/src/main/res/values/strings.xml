@@ -2,4 +2,5 @@
     <string name="app_name">whodis</string>
     <string name="title_activity_home">Log</string>
     <string name="whiteload">whiteload</string>
+    <string name="search">Search</string>
 </resources>
