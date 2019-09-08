@@ -25,9 +25,14 @@
         layout="@layout/content_home"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button"
+        android:id="@+id/showOverlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_margin="16dp"
+        app:srcCompat="@android:drawable/ic_dialog_alert" />
+
+    <include layout="@layout/content_home" />
         android:layout_margin="50dp"
         android:background="@color/colorPrimary"
         android:baselineAlignBottom="true"
@@ -41,5 +46,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_input_add" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
