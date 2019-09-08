@@ -21,6 +21,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONObject;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by matt on 08/08/2016.
@@ -29,6 +40,8 @@ import com.android.volley.toolbox.Volley;
 public class MainService extends Service implements View.OnTouchListener {
     public String number;
     public String jsonText;
+    public Object jsonObject;
+    public String finalString;
     private static final String TAG = MainService.class.getSimpleName();
 
     private WindowManager windowManager;
@@ -45,7 +58,7 @@ public class MainService extends Service implements View.OnTouchListener {
     public int onStartCommand(Intent intent, int flags, int startId) {
         this.number = intent.getStringExtra("number");
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        String url = "insert api key here="+number;
+        String url = "https://api.ekata.com/3.0/phone.json?api_key=337a4654a9854d20b556ef2926eaa919&phone.country_hint=1&phone="+number;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -67,8 +80,6 @@ public class MainService extends Service implements View.OnTouchListener {
 
         super.onCreate();
 
-        Log.d("TAG", "created overlay!");
-
         windowManager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
     }
 
@@ -86,38 +97,29 @@ public class MainService extends Service implements View.OnTouchListener {
         params.x = 0;
         params.y = 0;
 
-        FrameLayout interceptorLayout = new FrameLayout(this) {
-/*
-            @Override
-            public boolean dispatchKeyEvent(KeyEvent event) {
-
-                // Only fire on the ACTION_DOWN event, or you'll get two events (one for _DOWN, one for _UP)
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-
-                    // Check if the HOME button is pressed
-                    if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-
-                        Log.v(TAG, "BACK Button Pressed");
-
-                        // As we've taken action, we'll return true to prevent other apps from consuming the event as well
-                        return true;
-                    }
-                }
-
-                // Otherwise don't intercept the event
-                return super.dispatchKeyEvent(event);
-            }
-
- */
-        };
+        FrameLayout interceptorLayout = new FrameLayout(this);
 
         floatyView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.floating_view, interceptorLayout);
 
         floatyView.setOnTouchListener(this);
 
+        JsonParser parser = new JsonParser();
+        JsonObject jso = parser.parse(jsonText).getAsJsonObject();
+        JsonObject entity = jso.getAsJsonArray("belongs_to").get(0).getAsJsonObject();
+        String name = entity.get("name").getAsString();
+        String type = entity.get("type").getAsString();
+        String city = jso.getAsJsonArray("current_addresses").get(0).getAsJsonObject().get("city").getAsString();
+
+        finalString = "Name: " + name + "\n";
+        finalString += "City: " + city + "\n";
+        finalString += "Type: " + type;
+
+        //Log.d("JJJJJJ", jsonObject.toString());
+        //Log.d("FFFFFF", finalString);
+
         TextView textView = interceptorLayout.findViewById(R.id.floatyText);
-        if(jsonText != "") {
-            textView.setText(jsonText);
+        if(finalString != "") {
+            textView.setText(finalString);
         } else {
             textView.setText("error!");
         }
@@ -126,12 +128,8 @@ public class MainService extends Service implements View.OnTouchListener {
 
     @Override
     public void onDestroy() {
-//        Log.d("FFFFF", floatyView.toString());
-
-        Log.d("D3", "should destroy!");
         System.gc();
         if (floatyView != null) {
-            Log.d("DESTROYER", "should be removing right now");
             windowManager.removeView(floatyView);
 
             floatyView = null;

@@ -74,7 +74,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private void launchMainService() {
         Intent svc = new Intent(this, MainService.class);
-        svc.putExtra("number", "5198884567");
+        svc.putExtra("number", "6049262221");
         stopService(svc);
         startService(svc);
     }
